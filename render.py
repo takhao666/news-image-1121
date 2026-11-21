@@ -112,6 +112,7 @@ def pic_barrage(d, x0, y0, x1, y1):
         d.arc([bx, y1 - 52, bx + 110, y1 - 6], start=180, end=360,
               fill=(220, 220, 220), width=4)
         d.line([(bx, y1 - 26), (bx + 110, y1 - 26)], fill=(220, 220, 220), width=3)
+    d.text((x0 + 10, y1 - 24), "KYIV", font=F(SANS_B, 13), fill=(255, 255, 255))
     d.rectangle([x0, y0, x1, y1], outline=INK, width=2)
 
 

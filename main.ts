@@ -19,6 +19,21 @@ copyFileSync(source, dest);
 
 const original = readFileSync(source);
 const copied = readFileSync(dest);
+// Gate check: the entry must be a PNG of at most 1 MiB and 1024x1024.
+// The PNG signature is 8 bytes, then the IHDR chunk holds width and
+// height as big-endian uint32 at offsets 16 and 20.
+if (original.length > 1048576) {
+  throw new Error(`entry.png is ${original.length} bytes, over the 1 MiB cap`);
+}
+if (original.subarray(0, 8).toString('hex') !== '89504e470d0a1a0a'
+    || original.toString('ascii', 12, 16) !== 'IHDR') {
+  throw new Error('entry.png is not a PNG file');
+}
+const width = original.readUInt32BE(16);
+const height = original.readUInt32BE(20);
+if (width > 1024 || height > 1024) {
+  throw new Error(`entry.png is ${width}x${height}, over the 1024x1024 cap`);
+}
 if (original.length !== copied.length) {
   throw new Error(`length mismatch: ${original.length} vs ${copied.length}`);
 }
